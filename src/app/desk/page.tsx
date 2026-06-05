@@ -45,8 +45,6 @@ export default function FrontDesk() {
     }
   }, [notification]);
 
-
-
   // Synchronize active visitor state when visitors list updates
   useEffect(() => {
     if (activeVisitor) {
