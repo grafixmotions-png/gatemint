@@ -133,13 +133,37 @@ body {
   
   .print-area {
     display: block !important;
-    border: none !important;
+    border: 1px solid #e4e4e7 !important;
     box-shadow: none !important;
-    margin: 0 !important;
+    margin: 20px auto !important;
     padding: 0 !important;
     width: 100% !important;
-    position: absolute;
-    left: 0;
-    top: 0;
+    max-width: 440px !important;
+    position: relative !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Force high contrast black-on-white text for pass items on print */
+  .print-area * {
+    color: black !important;
+    background-color: transparent !important;
+    border-color: #e4e4e7 !important;
+  }
+
+  /* Retain specific backgrounds for badges/accents */
+  .print-area .bg-emerald-500 {
+    background-color: #10b981 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure QR code canvas/SVG prints correctly */
+  canvas, svg {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
