@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { Shield, Printer, Download, ArrowLeft, CheckCircle, Calendar, Clock, User, Landmark } from 'lucide-react';
 import { Visitor } from '@/utils/seedData';
 import confetti from 'canvas-confetti';
@@ -52,9 +52,6 @@ export default function VisitorPass({ visitor, triggerConfetti = false, onBackCl
   };
 
   const handleDownload = () => {
-    // Generate a simple text file download or canvas download. 
-    // For presentation ease, we will alert and prepare a downloadable text receipt 
-    // or trigger print as the primary premium copy.
     const fileContent = `
 =========================================
           GATEMINT CAMPUS PASS          
@@ -143,12 +140,12 @@ Please present the QR code at the Gate.
 
           {/* QR Code Container */}
           <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-lg bg-zinc-50/30 dark:bg-zinc-900/10">
-            <QRCodeSVG 
+            <QRCodeCanvas 
               value={visitor.qrCodeValue} 
-              size={160}
+              size={256}
               bgColor={"#ffffff"}
               fgColor={"#000000"}
-              className="bg-white p-2 border border-zinc-200 dark:border-zinc-800"
+              className="bg-white p-2 border border-zinc-200 dark:border-zinc-800 w-40 h-40"
               level={"H"}
               includeMargin={false}
             />
