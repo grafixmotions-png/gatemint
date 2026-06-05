@@ -35,7 +35,6 @@ export default function Register() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Construct final registration data
     const newPass = registerVisitor({
       fullName: formData.fullName,
       phone: formData.phone,
@@ -54,7 +53,6 @@ export default function Register() {
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
-    // Reset Form
     setFormData({
       fullName: '',
       phone: '',
@@ -72,7 +70,7 @@ export default function Register() {
 
   return (
     <div className="flex-1 bg-zinc-50 dark:bg-black/95 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-xl mx-auto">
+      <div className={`max-w-xl mx-auto ${showSuccessModal ? 'no-print' : ''}`}>
         
         {/* Header */}
         <div className="text-center mb-8">
