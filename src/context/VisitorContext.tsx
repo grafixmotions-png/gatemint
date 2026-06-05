@@ -72,6 +72,29 @@ export const VisitorProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsLoaded(true);
   }, []);
 
+  // Listen for changes from other tabs to sync in real-time
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'gatemint_visitors' && e.newValue) {
+        try {
+          setVisitors(JSON.parse(e.newValue));
+        } catch (err) {
+          // Ignore parse errors
+        }
+      }
+      if (e.key === 'gatemint_logs' && e.newValue) {
+        try {
+          setActivityLogs(JSON.parse(e.newValue));
+        } catch (err) {
+          // Ignore parse errors
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const setInitialLogs = () => {
     const initialLogs = [
       { id: 'l1', text: 'Sarah Jenkins checked in at Engineering Dept', timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString() },
