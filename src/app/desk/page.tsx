@@ -70,8 +70,20 @@ export default function FrontDesk() {
     e.preventDefault();
     if (!scannedId.trim()) return;
 
+    let visitorIdToFind = scannedId.trim();
+
+    // Support simulating full URLs too
+    if (visitorIdToFind.startsWith('http://') || visitorIdToFind.startsWith('https://')) {
+      try {
+        const url = new URL(visitorIdToFind);
+        const pathParts = url.pathname.split('/');
+        const lastPart = pathParts[pathParts.length - 1];
+        if (lastPart) visitorIdToFind = lastPart;
+      } catch (err) {}
+    }
+
     const matched = visitors.find(
-      v => v.visitorId.toLowerCase() === scannedId.trim().toLowerCase() || v.id === scannedId.trim()
+      v => v.visitorId.toLowerCase() === visitorIdToFind.toLowerCase() || v.id === visitorIdToFind
     );
 
     if (matched) {
@@ -105,7 +117,7 @@ export default function FrontDesk() {
     .sort((a, b) => new Date(b.checkInTime || '').getTime() - new Date(a.checkInTime || '').getTime());
 
   return (
-    <div className="flex-1 flex bg-zinc-50 dark:bg-black/95">
+    <div className="flex-1 flex bg-zinc-50 dark:bg-black/95 py-0 px-0">
       <Sidebar />
 
       <main className="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto max-w-7xl mx-auto w-full">
@@ -202,6 +214,20 @@ export default function FrontDesk() {
                 onScanSuccess={(decodedText) => {
                   let visitorIdToFind = decodedText.trim();
                   let scannedVisitorData: any = null;
+                  
+                  // If the decoded text is a URL, extract the ID from the end of the pathname
+                  if (visitorIdToFind.startsWith('http://') || visitorIdToFind.startsWith('https://')) {
+                    try {
+                      const url = new URL(visitorIdToFind);
+                      const pathParts = url.pathname.split('/');
+                      const lastPart = pathParts[pathParts.length - 1];
+                      if (lastPart) {
+                        visitorIdToFind = lastPart;
+                      }
+                    } catch (e) {
+                      // Fallback: keep visitorIdToFind as the full string
+                    }
+                  }
                   
                   // Try parsing the decoded QR text as a JSON string (transferred visitor info)
                   try {
@@ -404,7 +430,7 @@ export default function FrontDesk() {
                     <button
                       onClick={() => handleCheckOut(activeVisitor.id, activeVisitor.fullName)}
                       disabled={activeVisitor.status !== 'Checked In'}
-                      className="flex-1 inline-flex items-center justify-center gap-2 text-xs font-bold h-11 border-2 border-zinc-200 dark:border-zinc-800 hover:border-black dark:hover:border-white disabled:opacity-40 disabled:hover:border-zinc-200 disabled:shadow-none bg-transparent hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all cursor-pointer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 text-xs font-bold h-11 border-2 border-zinc-200 dark:border-zinc-800 hover:border-black dark:hover:border-white disabled:opacity-40 disabled:hover:bg-zinc-200 disabled:shadow-none bg-transparent hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all cursor-pointer"
                     >
                       <LogOut className="h-4 w-4 text-red-500" /> Log Check Out
                     </button>
