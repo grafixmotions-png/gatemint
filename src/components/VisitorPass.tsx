@@ -15,6 +15,15 @@ interface VisitorPassProps {
 
 export default function VisitorPass({ visitor, triggerConfetti = false, onBackClick }: VisitorPassProps) {
   const passRef = useRef<HTMLDivElement>(null);
+  const [origin, setOrigin] = React.useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setOrigin(window.location.origin);
+    }
+  }, []);
+
+  const qrCodeValue = origin ? `${origin}/pass/${visitor.visitorId}` : visitor.visitorId;
 
   useEffect(() => {
     if (triggerConfetti) {
@@ -141,7 +150,7 @@ Please present the QR code at the Gate.
           {/* QR Code Container */}
           <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-lg bg-zinc-50/30 dark:bg-zinc-900/10">
             <QRCodeCanvas 
-              value={visitor.qrCodeValue} 
+              value={qrCodeValue} 
               size={256}
               bgColor={"#ffffff"}
               fgColor={"#000000"}
@@ -191,17 +200,17 @@ Please present the QR code at the Gate.
           </div>
 
           {visitor.checkInTime && (
-            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-3 border-2 border-zinc-100 dark:border-zinc-800 text-[11px] grid grid-cols-2 gap-2 text-zinc-500 dark:text-zinc-400">
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-3 border-2 border-zinc-100 dark:border-zinc-800 text-[11px] grid grid-cols-2 gap-2 text-zinc-500 dark:text-zinc-400 font-mono">
               <div>
-                <span className="block font-bold text-[9px] uppercase tracking-wider text-zinc-400">Checked In</span>
-                <span className="font-mono text-black dark:text-white">
+                <span className="block font-bold text-[9px] uppercase tracking-wider text-zinc-400 font-sans">Checked In</span>
+                <span className="text-black dark:text-white font-mono">
                   {new Date(visitor.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
               {visitor.checkOutTime && (
                 <div>
-                  <span className="block font-bold text-[9px] uppercase tracking-wider text-zinc-400">Checked Out</span>
-                  <span className="font-mono text-black dark:text-white">
+                  <span className="block font-bold text-[9px] uppercase tracking-wider text-zinc-400 font-sans">Checked Out</span>
+                  <span className="text-black dark:text-white font-mono">
                     {new Date(visitor.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -218,7 +227,7 @@ Please present the QR code at the Gate.
         </div>
 
         {/* Footer info */}
-        <div className="bg-zinc-50 dark:bg-zinc-900 px-6 py-4 border-t-2 border-zinc-100 dark:border-zinc-900 text-center text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">
+        <div className="bg-zinc-50 dark:bg-zinc-900 px-6 py-4 border-t-2 border-zinc-100 dark:border-zinc-900 text-center text-[10px] text-zinc-400 dark:text-zinc-500 font-medium font-sans">
           GateMint Visitor Security System • Managed Institution Pass
         </div>
       </div>
